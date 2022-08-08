@@ -4,15 +4,16 @@ import { AlumnosComponent } from './components/alumnos/alumnos.component';
 import { CursosComponent } from './components/cursos/cursos.component';
 import { LoginComponent } from './components/login/login.component';
 import { ProfesoresComponent } from './components/profesores/profesores.component';
-
+import { AutoGuard } from './auto.guard';
 const routes: Routes = [
-  {path:'',component:LoginComponent},
-  {path:'alumnos',component:AlumnosComponent},
-  {path:'profesores',component:ProfesoresComponent},
-  {path:'cursos',component:CursosComponent},
-  //{path:'',component:LoginComponent,pathMatch:'full'},
-  //{path:'**',redirectTo:'/',pathMatch:'full'},
-
+  {path:'auth',
+  loadChildren: () => import('./app.module').then(m=>m.AppModule),
+  canActivate:[AutoGuard]
+ 
+}
+ 
+  
+  
 ];
 
 @NgModule({

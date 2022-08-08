@@ -14,7 +14,7 @@ import { MaterialModule } from './modules/material/material.module';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginModule } from './modules/login/login.module';
-
+import { AuthRoutingModule } from './auth/auth-routing.module';
 
 @NgModule({
   declarations: [
@@ -33,7 +33,8 @@ import { LoginModule } from './modules/login/login.module';
     ReactiveFormsModule,
     MaterialModule,
     HttpClientModule,
-    LoginModule
+    LoginModule,
+    AuthRoutingModule
   
   ],
   providers: [],
