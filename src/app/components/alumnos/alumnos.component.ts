@@ -2,7 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 import { Alumno } from 'src/app/Interfaces/AlumnoInterface';
+
+
 
 @Component({
   selector: 'app-alumnos',
@@ -16,6 +19,7 @@ export class AlumnosComponent implements OnInit {
 
   formEstudiante:FormGroup;
   listaAlumnos = new MatTableDataSource<Alumno>();
+  isAdmin:boolean = localStorage.getItem('rol') == 'admin';
   
 
   constructor(private fb:FormBuilder, private http:HttpClient) { }
@@ -24,18 +28,16 @@ export class AlumnosComponent implements OnInit {
 
   ngOnInit(): void {
     this.crearFormulario();
-    
-    this.http.get<Alumno[]>('assets/JsonDatos.json').subscribe (data =>{
-      console.log(data);
-      this.listaAlumnos.data=data;
-    })
-    console.log(this.listaAlumnos.data.length);
+    this.getAlumnos();
+  
+
   }
   
   //Metodo de Crea,Inicializa y AgregaValida los inputs
   crearFormulario():void{
    
     this.formEstudiante = this.fb.group({
+      id  : ['' ],
       nombre  : ['', [ Validators.required, Validators.minLength(5) ]  ],
       apellido: ['', [Validators.required,Validators.minLength(5)] ],
       dni  : ['', [ Validators.required,Validators.maxLength(8),Validators.pattern("^[0-9]*$")]],
@@ -75,54 +77,89 @@ export class AlumnosComponent implements OnInit {
 
   //Probando como obtener los valores de los forumarios
   
-agregarAlumno(){
+  agregarAlumno(){
 
 
-  let editar = false;
-  let alumno= new Alumno();
-
-  let listaAuxiliar = this.listaAlumnos.data;
+    let editar = false;
+    let alumno= new Alumno();
   
+    let listaAuxiliar = this.listaAlumnos.data;
+    
+  
+    alumno.nombre=this.formEstudiante.get('nombre').value;
+    alumno.apellido=this.formEstudiante.get('apellido').value;
+    alumno.dni=this.formEstudiante.get('dni').value;
+    alumno.email=this.formEstudiante.get('email').value;
+    alumno.nota=this.formEstudiante.get('nota').value;
+  
+   for (const element of listaAuxiliar) {
+     if(element.dni == alumno.dni){
+      element.nombre = alumno.nombre;
+      element.apellido = alumno.apellido;
+      element.dni= alumno.dni;
+      element.email= alumno.email;
+      element.nota = alumno.nota
+      editar=true;
+      
+      
+      this.http.put<Alumno[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Alumnos/'+element.id,element).subscribe (data =>{
+        console.log(data);
+        this.listaAlumnos.data=data;
+        console.log('LA LISTA ES', data);
+        this.listaAlumnos.data = listaAuxiliar;
+        this.formEstudiante.reset();
+        
+      })
 
-  alumno.nombre=this.formEstudiante.get('nombre').value;
-  alumno.apellido=this.formEstudiante.get('apellido').value;
-  alumno.dni=this.formEstudiante.get('dni').value;
-  alumno.email=this.formEstudiante.get('email').value;
-  alumno.nota=this.formEstudiante.get('nota').value;
-
- for (const element of listaAuxiliar) {
-   if(element.dni == alumno.dni){
-    element.nombre = alumno.nombre;
-    element.apellido = alumno.apellido;
-    element.dni= alumno.dni;
-    element.email= alumno.email;
-    element.nota = alumno.nota
-    editar=true;
+     }
    }
- }
-if(editar==false){
-  listaAuxiliar.push(alumno);
-}
-  this.listaAlumnos.data = listaAuxiliar;
-this.formEstudiante.reset();
-}
+  if(editar==false){
+    
+    this.http.post<Alumno[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Alumnos',alumno).subscribe (data =>{
+      console.log(data);
+      this.listaAlumnos.data=data;
+      console.log('LA LISTA ES', data);
+      listaAuxiliar.push(alumno);
+      this.listaAlumnos.data = listaAuxiliar;
+      this.formEstudiante.reset();
+      
+    })
+    
+  }
+  }           
 
 editarAlumno(element){
+console.log('editar', element);
 
- this.formEstudiante.setValue(element);
+ this.formEstudiante.setValue(element );
+
+ 
   
 }
 
 
 eliminarAlumno(element){
+console.log('EL ELEMENTO A BORRAR ES',element);
 
-console.log(JSON.stringify(this.listaAlumnos.data));
-let listaAuxiliar2=this.listaAlumnos.data;
-let lis = listaAuxiliar2.filter(data => data.dni != element.dni );
-this.listaAlumnos.data=lis;
+let numAborrar=element.id;
+this.http.delete<Alumno[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Alumnos/'+numAborrar).subscribe (data =>{
+      console.log(data);
+      this.listaAlumnos.data=data;
+      console.log('LA LISTA ES', data);
+      this.getAlumnos();  
+    })
 
+    
 
+}
 
+getAlumnos(){
+  this.http.get<Alumno[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Alumnos').subscribe (data =>{
+    console.log(data);
+    this.listaAlumnos.data=data;
+    console.log('LA LISTA ES', data);
+    
+  })
 }
 
 
