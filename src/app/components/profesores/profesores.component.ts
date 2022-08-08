@@ -14,7 +14,7 @@ export class ProfesoresComponent implements OnInit {
   displayedColumns: string[] = ['nombre', 'apellido', 'dni','curso','eliminar','editar'];
   formProfesor:FormGroup;
   listaProfesores= new MatTableDataSource<Profesor>();
-
+  isAdmin:boolean = localStorage.getItem('rol') == 'admin';
 
   constructor(private fb:FormBuilder, private http:HttpClient) { }
 
@@ -27,6 +27,7 @@ export class ProfesoresComponent implements OnInit {
 
   crearFormulario(){
     this.formProfesor = this.fb.group({
+       id  : ['' ],
       nombre  : ['', [ Validators.required, Validators.minLength(5) ]  ],
       apellido  : ['', [ Validators.required, Validators.minLength(5) ]  ],
       dni  : ['', [ Validators.required,Validators.maxLength(8),Validators.pattern("^[0-9]*$")]],
@@ -64,7 +65,7 @@ agregarProfesor(){
   profesor.apellido=this.formProfesor.get('apellido').value;
   profesor.dni=this.formProfesor.get('dni').value;
   profesor.curso=this.formProfesor.get('curso').value;
-  
+
 
  for (const element of listaAuxiliar) {
    if(element.dni == profesor.dni){

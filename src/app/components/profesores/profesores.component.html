@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div *ngIf="isAdmin" class="container-fluid">
     <div class="row">
         <div class="col-12">
             <form [formGroup]="formProfesor" >
@@ -74,6 +74,8 @@
 
         </div>
     </div>
+  </div>
+<div>
     <div class="row">
         <div class="col-12">
             <table mat-table [dataSource]="listaProfesores" class="mat-elevation-z8">
@@ -108,13 +110,13 @@
                    <!-- Accion Column -->  
                  <ng-container matColumnDef="eliminar">
                     <th mat-header-cell *matHeaderCellDef > Eliminar </th>
-                    <td mat-cell *matCellDef="let element"><button (click)="eliminarProfesor(element)">  <span class="material-symbols-outlined">delete</span>  </button></td>
+                    <td mat-cell *matCellDef="let element"><button *ngIf="isAdmin" (click)="eliminarProfesor(element)">  <span class="material-symbols-outlined">delete</span>  </button></td>
                   </ng-container>
     
                     <!-- Accion Column --> 
                  <ng-container matColumnDef="editar">
                   <th mat-header-cell *matHeaderCellDef > Editar </th>
-                  <td mat-cell *matCellDef="let element"> <button (click)="editarProfesor(element)"  class="material-symbols-outlined">edit</button>
+                  <td mat-cell *matCellDef="let element"> <button *ngIf="isAdmin" (click)="editarProfesor(element)"  class="material-symbols-outlined">edit</button>
                     </td>
                 </ng-container>
                  
