@@ -21,10 +21,7 @@ export class ProfesoresComponent implements OnInit {
   ngOnInit(): void {
     this.crearFormulario();
 
-    this.http.get<Profesor[]>('assets/JsonDatosProfesores.json').subscribe (data =>{
-      console.log(data);
-      this.listaProfesores.data=data;
-    })
+   this.getProfesores();
 
   }
 
@@ -55,7 +52,8 @@ get cursoNoValido(){
 }
 
 agregarProfesor(){
-  
+
+
   let editar = false;
   let profesor= new Profesor();
 
@@ -66,7 +64,7 @@ agregarProfesor(){
   profesor.apellido=this.formProfesor.get('apellido').value;
   profesor.dni=this.formProfesor.get('dni').value;
   profesor.curso=this.formProfesor.get('curso').value;
-
+  
 
  for (const element of listaAuxiliar) {
    if(element.dni == profesor.dni){
@@ -75,24 +73,69 @@ agregarProfesor(){
     element.dni= profesor.dni;
     element.curso= profesor.curso;
     editar=true;
+    
+    
+    this.http.put<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores/'+element.id,element).subscribe (data =>{
+      console.log(data);
+      this.listaProfesores.data=data;
+      console.log('LA LISTA ES', data);
+      this.listaProfesores.data = listaAuxiliar;
+      this.formProfesor.reset();
+      
+    })
+
    }
  }
 if(editar==false){
-  listaAuxiliar.push(profesor);
+  
+  this.http.post<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores',profesor).subscribe (data =>{
+    console.log(data);
+    this.listaProfesores.data=data;
+    console.log('LA LISTA ES', data);
+    listaAuxiliar.push(profesor);
+    this.listaProfesores.data = listaAuxiliar;
+    this.formProfesor.reset();
+    
+  })
+  
 }
-  this.listaProfesores.data = listaAuxiliar;
-this.formProfesor.reset();
+}           
+
+editarProfesor(element){
+console.log('editar', element);
+
+this.formProfesor.setValue(element );
+
+
+
 }
 
 
 eliminarProfesor(element){
-  let listaAuxiliar2=this.listaProfesores.data;
-  let lis = listaAuxiliar2.filter(data => data.dni != element.dni );
-  this.listaProfesores.data=lis;
+console.log('EL ELEMENTO A BORRAR ES',element);
+
+let numAborrar=element.id;
+this.http.delete<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores/'+numAborrar).subscribe (data =>{
+    console.log(data);
+    this.listaProfesores.data=data;
+    console.log('LA LISTA ES', data);
+    this.getProfesores();  
+  })
+
+  
+
 }
 
-editarProfesor(element){
-  this.formProfesor.setValue(element);
+getProfesores(){
+this.http.get<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores').subscribe (data =>{
+  console.log(data);
+  this.listaProfesores.data=data;
+  console.log('LA LISTA ES', data);
+  
+})
 }
+
+
+
 
 }
