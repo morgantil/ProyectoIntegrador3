@@ -12,6 +12,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoginModule } from './modules/login/login.module';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FeaturesModule } from './feature/features.module';
+import { RoutingModule } from './routing.module';
+import { ProfesoresComponent } from './feature/profesores/profesores.component';
 
 
 @NgModule({
@@ -29,7 +31,7 @@ import { FeaturesModule } from './feature/features.module';
     MaterialModule,
     HttpClientModule,
     LoginModule,
-    FeaturesModule
+    RoutingModule,
   
   ],
   providers: [],

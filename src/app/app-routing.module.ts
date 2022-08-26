@@ -7,11 +7,11 @@ import { ProfesoresComponent } from './feature/profesores/profesores.component';
 
 const routes: Routes = [
   {path:'',component:LoginComponent},
-  {path:'alumnos',component:AlumnosComponent},
   {path:'profesores',component:ProfesoresComponent},
   {path:'cursos',component:CursosComponent},
+  {path:'alumnos',loadChildren:()=>import('./feature/features.module').then(m=>m.FeaturesModule)},
   //{path:'',component:LoginComponent,pathMatch:'full'},
-  //{path:'**',redirectTo:'/',pathMatch:'full'},
+  {path:'**',redirectTo:'/',pathMatch:'full'},
 
 ];
 

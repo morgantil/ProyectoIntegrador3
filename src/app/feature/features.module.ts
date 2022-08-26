@@ -5,6 +5,7 @@ import { CursosComponent } from './cursos/cursos.component';
 import { ProfesoresComponent } from './profesores/profesores.component';
 import { MaterialModule } from '../modules/material/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FeatureRoutingModule } from './feature-routing.module';
 
 
 
@@ -18,6 +19,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     MaterialModule,
     ReactiveFormsModule,
+    FeatureRoutingModule
+    
   ]
 })
 export class FeaturesModule { }
