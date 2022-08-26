@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AlumnosComponent } from './components/alumnos/alumnos.component';
-import { CursosComponent } from './components/cursos/cursos.component';
+import { AlumnosComponent } from './feature/alumnos/alumnos.component';
+import { CursosComponent } from './feature/cursos/cursos.component';
 import { LoginComponent } from './components/login/login.component';
-import { ProfesoresComponent } from './components/profesores/profesores.component';
+import { ProfesoresComponent } from './feature/profesores/profesores.component';
 
 const routes: Routes = [
   {path:'',component:LoginComponent},
