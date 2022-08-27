@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.crearFormulario();
     this.getUsuarios();
+    localStorage.removeItem("rol");
   }
 
   crearFormulario() {
