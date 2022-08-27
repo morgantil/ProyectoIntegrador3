@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducers';
 import { User } from 'src/app/Interfaces/UserInterface';
+import * as actions from '../../core/rol.actions';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -12,7 +16,15 @@ export class LoginComponent implements OnInit {
   public credencialesValidas: boolean = null;
   public mostrarLogin = true;
   listaUser: User[] = [];
-  constructor(private fb: FormBuilder, private http: HttpClient) {}
+  rol : string;
+
+  constructor(private fb: FormBuilder, private http: HttpClient, private store : Store<AppState>) {
+    this.rol = "";
+    this.store.select('rol').subscribe((rol)=>{
+      console.log(rol);
+      this.rol = rol;
+    });
+  }
 
   ngOnInit(): void {
     this.crearFormulario();
@@ -43,13 +55,13 @@ export class LoginComponent implements OnInit {
   enviar(): boolean {
     let user = this.formLogin.get('user').value;
     let pass = this.formLogin.get('pass').value;
-
-    console.log('LOS QUE ENTRA', user, pass);
+    console.log("pepito");
 
     for (let usuario of this.listaUser) {
       if (user == usuario.user && pass == usuario.pass) {
         this.credencialesValidas = true;
-        localStorage.setItem('rol',usuario.rol);
+        //localStorage.setItem('rol',usuario.rol);
+        this.asignar(usuario.rol);
       }
     }
     this.mostrarLogin = !this.credencialesValidas;
@@ -65,5 +77,12 @@ export class LoginComponent implements OnInit {
         this.listaUser = data;
         console.log('LA LISTA ES', data);
       });
+  }
+
+  asignar(rolUser : string){
+    this.store.dispatch( actions.asignar({rol:rolUser}));
+  }
+  limpiar(){
+    this.store.dispatch( actions.limpiar());
   }
 }

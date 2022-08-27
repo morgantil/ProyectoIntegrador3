@@ -14,6 +14,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { FeaturesModule } from './feature/features.module';
 import { RoutingModule } from './routing.module';
 import { ProfesoresComponent } from './feature/profesores/profesores.component';
+import { StoreModule } from '@ngrx/store';
+import { rolReducer } from './core/rol.reducer';
 
 
 @NgModule({
@@ -32,6 +34,7 @@ import { ProfesoresComponent } from './feature/profesores/profesores.component';
     HttpClientModule,
     LoginModule,
     RoutingModule,
+    StoreModule.forRoot({ rol: rolReducer})
   
   ],
   providers: [],
