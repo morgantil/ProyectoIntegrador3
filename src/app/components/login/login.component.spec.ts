@@ -22,4 +22,12 @@ describe('LoginComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  //TEST UNITARIOS
+
+  it('form invalid when empty', () => {
+    expect(component.crearFormulario).toBeFalsy();
+  });
+
+
 });
