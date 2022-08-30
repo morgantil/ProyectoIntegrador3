@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducers';
 import { Curso } from 'src/app/Interfaces/CursoInterface copy';
 
 @Component({
@@ -14,16 +16,21 @@ export class CursosComponent implements OnInit {
   displayedColumns: string[] = ['nombre', 'cantHoras', 'alumnos','dia','hora','eliminar','editar'];
   formCurso:FormGroup;
   listaCursos= new MatTableDataSource<Curso>();
+  rol:string = "";
+  isAdmin:boolean = false;
 
-  constructor(private fb:FormBuilder, private http:HttpClient) { }
+  constructor(private fb:FormBuilder, private http:HttpClient, private store : Store<AppState>) { 
+    this.store.select('rol').subscribe((rol)=>{
+      console.log(rol);
+      this.rol = rol;
+    });
+  }
 
   ngOnInit(): void {
     this.crearFormulario();
-
-    this.http.get<Curso[]>('assets/JsonDatosCursos.json').subscribe (data =>{
-      console.log(data);
-      this.listaCursos.data=data;
-    })
+    this.getCursos();
+    this.isAdmin = this.rol == 'admin';
+   
 
   }
 
@@ -58,7 +65,8 @@ get horaNoValido(){
 }
 
 agregarCurso(){
-  
+
+
   let editar = false;
   let curso= new Curso();
 
@@ -79,30 +87,68 @@ agregarCurso(){
     element.dia= curso.dia;
     element.hora= curso.hora;
     editar=true;
+    
+    
+    this.http.put<Curso[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Cursos/'+element.id,element).subscribe (data =>{
+      console.log(data);
+      this.listaCursos.data=data;
+      console.log('LA LISTA ES', data);
+      this.listaCursos.data = listaAuxiliar;
+      this.formCurso.reset();
+      
+    })
+
    }
  }
 if(editar==false){
-  listaAuxiliar.push(curso);
+  
+  this.http.post<Curso[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Cursos',curso).subscribe (data =>{
+    console.log(data);
+    this.listaCursos.data=data;
+    console.log('LA LISTA ES', data);
+    listaAuxiliar.push(curso);
+    this.listaCursos.data = listaAuxiliar;
+    this.formCurso.reset();
+    
+  })
+  
 }
-  this.listaCursos.data = listaAuxiliar;
-this.formCurso.reset();
+}           
+
+editarCurso(element){
+console.log('editar', element);
+
+this.formCurso.setValue(element );
+
+
+
 }
 
 
 eliminarCurso(element){
-  let listaAuxiliar2=this.listaCursos.data;
-  let lis = listaAuxiliar2.filter(data => data.nombre != element.nombre );
-  this.listaCursos.data=lis;
+console.log('EL ELEMENTO A BORRAR ES',element);
+
+let numAborrar=element.id;
+this.http.delete<Curso[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Cursos/'+numAborrar).subscribe (data =>{
+    console.log(data);
+    this.listaCursos.data=data;
+    console.log('LA LISTA ES', data);
+    this.getCursos();  
+  })
+
+  
+
 }
 
-editarCurso(element){
-  this.formCurso.setValue(element);
+getCursos(){
+this.http.get<Curso[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Cursos').subscribe (data =>{
+  console.log(data);
+  this.listaCursos.data=data;
+  console.log('LA LISTA ES', data);
+  
+})
 }
 
+
 }
-
-
-
-
-
 

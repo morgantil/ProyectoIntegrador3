@@ -1,6 +1,6 @@
-
 export class Curso {
-    nombre: string;
+  id:string;  
+  nombre: string;
     alumnos: number;
     cantHoras: number;
     dia: string;

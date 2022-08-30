@@ -3,6 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducers';
+import { LoginComponent } from 'src/app/components/login/login.component';
 import { Alumno } from 'src/app/Interfaces/AlumnoInterface';
 
 
@@ -19,17 +22,26 @@ export class AlumnosComponent implements OnInit {
 
   formEstudiante:FormGroup;
   listaAlumnos = new MatTableDataSource<Alumno>();
-  isAdmin:boolean = localStorage.getItem('rol') == 'admin';
+  //isAdmin:boolean = localStorage.getItem('rol') == 'admin';
+  isAdmin:boolean = false;
+  rol : string;
   
 
-  constructor(private fb:FormBuilder, private http:HttpClient) { }
+  constructor(private fb:FormBuilder, private http:HttpClient, private store : Store<AppState>) { 
+    this.store.select('rol').subscribe((rol)=>{
+      console.log(rol);
+      this.rol = rol;
+    });
+  }
 
 
 
   ngOnInit(): void {
     this.crearFormulario();
     this.getAlumnos();
+    this.isAdmin = this.rol == 'admin';
   
+
 
   }
   

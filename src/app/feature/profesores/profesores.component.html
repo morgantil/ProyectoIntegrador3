@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div *ngIf="isAdmin" class="container-fluid">
     <div class="row">
         <div class="col-12">
             <form [formGroup]="formProfesor" >
@@ -16,6 +16,7 @@
                   </span>
                 </div>
               </div>
+             
 
 <!-- FIN NOMBRE-->
 
@@ -63,13 +64,15 @@
       <span *ngIf="cursoNoValido"  id="passwordHelpInline" class="form-text text-danger">
         El nombre dni es invalido 
       </span>
+      <button class="btn btn-dark m-2" (click)="agregarProfesor()"  [disabled]="formProfesor.invalid">Enviar</button>
     </div>
   </div>
-
-<!-- FIN CURSO-->
 </form>
+</div>
+<!-- FIN CURSO-->
 
-<button class="btn btn-dark m-2" (click)="agregarProfesor()"  [disabled]="formProfesor.invalid">Enviar</button>
+
+
 
 
         </div>
@@ -108,13 +111,13 @@
                    <!-- Accion Column -->  
                  <ng-container matColumnDef="eliminar">
                     <th mat-header-cell *matHeaderCellDef > Eliminar </th>
-                    <td mat-cell *matCellDef="let element"><button (click)="eliminarProfesor(element)">  <span class="material-symbols-outlined">delete</span>  </button></td>
+                    <td mat-cell *matCellDef="let element"><button  *ngIf="isAdmin"  (click)="eliminarProfesor(element)">  <span class="material-symbols-outlined">delete</span>  </button></td>
                   </ng-container>
     
                     <!-- Accion Column --> 
-                 <ng-container matColumnDef="editar">
+                 <ng-container  matColumnDef="editar">
                   <th mat-header-cell *matHeaderCellDef > Editar </th>
-                  <td mat-cell *matCellDef="let element"> <button (click)="editarProfesor(element)"  class="material-symbols-outlined">edit</button>
+                  <td mat-cell *matCellDef="let element"> <button  *ngIf="isAdmin" (click)="editarProfesor(element)"  class="material-symbols-outlined">edit</button>
                     </td>
                 </ng-container>
                  
@@ -127,4 +130,4 @@
         
         </div>
     </div>
-</div>
+

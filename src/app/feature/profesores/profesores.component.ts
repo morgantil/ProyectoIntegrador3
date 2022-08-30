@@ -3,6 +3,8 @@ import { noUndefined } from '@angular/compiler/src/util';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducers';
 import { Profesor } from 'src/app/Interfaces/ProfesorInterface';
 
 @Component({
@@ -14,17 +16,20 @@ export class ProfesoresComponent implements OnInit {
   displayedColumns: string[] = ['nombre', 'apellido', 'dni','curso','eliminar','editar'];
   formProfesor:FormGroup;
   listaProfesores= new MatTableDataSource<Profesor>();
+  isAdmin:boolean = false;
+  rol : string;
+  
 
-
-  constructor(private fb:FormBuilder, private http:HttpClient) { }
-
+  constructor(private fb:FormBuilder, private http:HttpClient, private store : Store<AppState>) { 
+    this.store.select('rol').subscribe((rol)=>{
+      console.log(rol);
+      this.rol = rol;
+    });
+  }
   ngOnInit(): void {
     this.crearFormulario();
-
-    this.http.get<Profesor[]>('assets/JsonDatosProfesores.json').subscribe (data =>{
-      console.log(data);
-      this.listaProfesores.data=data;
-    })
+    this.isAdmin = this.rol == 'admin';
+    this.getProfesores();
 
   }
 
@@ -55,7 +60,8 @@ get cursoNoValido(){
 }
 
 agregarProfesor(){
-  
+
+
   let editar = false;
   let profesor= new Profesor();
 
@@ -75,24 +81,66 @@ agregarProfesor(){
     element.dni= profesor.dni;
     element.curso= profesor.curso;
     editar=true;
+    
+    
+    this.http.put<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores/'+element.id,element).subscribe (data =>{
+      console.log(data);
+      this.listaProfesores.data=data;
+      console.log('LA LISTA ES', data);
+      this.listaProfesores.data = listaAuxiliar;
+      this.formProfesor.reset();
+      
+    })
+
    }
  }
 if(editar==false){
-  listaAuxiliar.push(profesor);
+  
+  this.http.post<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores',profesor).subscribe (data =>{
+    console.log(data);
+    this.listaProfesores.data=data;
+    console.log('LA LISTA ES', data);
+    listaAuxiliar.push(profesor);
+    this.listaProfesores.data = listaAuxiliar;
+    this.formProfesor.reset();
+    
+  })
+  
 }
-  this.listaProfesores.data = listaAuxiliar;
-this.formProfesor.reset();
+}           
+
+editarProfesor(element){
+console.log('editar', element);
+
+this.formProfesor.setValue(element );
+
+
+
 }
 
 
 eliminarProfesor(element){
-  let listaAuxiliar2=this.listaProfesores.data;
-  let lis = listaAuxiliar2.filter(data => data.dni != element.dni );
-  this.listaProfesores.data=lis;
+console.log('EL ELEMENTO A BORRAR ES',element);
+
+let numAborrar=element.id;
+this.http.delete<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores/'+numAborrar).subscribe (data =>{
+    console.log(data);
+    this.listaProfesores.data=data;
+    console.log('LA LISTA ES', data);
+    this.getProfesores();  
+  })
+
+  
+
 }
 
-editarProfesor(element){
-  this.formProfesor.setValue(element);
+getProfesores(){
+this.http.get<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores').subscribe (data =>{
+  console.log(data);
+  this.listaProfesores.data=data;
+  console.log('LA LISTA ES', data);
+  
+})
 }
 
 }

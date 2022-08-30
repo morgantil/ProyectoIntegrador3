@@ -1,6 +1,6 @@
-
 export class Profesor {
-    nombre: string;
+  id:string;  
+  nombre: string;
     apellido: string;
     dni: number;
     curso: string;
