@@ -9,7 +9,7 @@ import * as actions from '../../core/rol.actions';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-  rol : string;
+  rol : string = '';
 
   constructor(private store : Store<AppState> , private router:Router) {
     this.rol = "";
