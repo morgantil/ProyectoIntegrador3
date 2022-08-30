@@ -14,7 +14,6 @@ export class LogueoGuard implements CanActivate {
 
   constructor(private store : Store<AppState>){
     this.store.select('rol').subscribe((rol)=>{
-      console.log(rol);
       this.rol = rol;
     });
   }

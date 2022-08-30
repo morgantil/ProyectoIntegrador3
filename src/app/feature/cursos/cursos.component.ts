@@ -21,7 +21,6 @@ export class CursosComponent implements OnInit {
 
   constructor(private fb:FormBuilder, private http:HttpClient, private store : Store<AppState>) { 
     this.store.select('rol').subscribe((rol)=>{
-      console.log(rol);
       this.rol = rol;
     });
   }
@@ -90,9 +89,7 @@ agregarCurso(){
     
     
     this.http.put<Curso[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Cursos/'+element.id,element).subscribe (data =>{
-      console.log(data);
       this.listaCursos.data=data;
-      console.log('LA LISTA ES', data);
       this.listaCursos.data = listaAuxiliar;
       this.formCurso.reset();
       
@@ -103,9 +100,7 @@ agregarCurso(){
 if(editar==false){
   
   this.http.post<Curso[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Cursos',curso).subscribe (data =>{
-    console.log(data);
     this.listaCursos.data=data;
-    console.log('LA LISTA ES', data);
     listaAuxiliar.push(curso);
     this.listaCursos.data = listaAuxiliar;
     this.formCurso.reset();
@@ -116,23 +111,14 @@ if(editar==false){
 }           
 
 editarCurso(element){
-console.log('editar', element);
-
 this.formCurso.setValue(element );
-
-
-
 }
 
 
 eliminarCurso(element){
-console.log('EL ELEMENTO A BORRAR ES',element);
-
 let numAborrar=element.id;
 this.http.delete<Curso[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Cursos/'+numAborrar).subscribe (data =>{
-    console.log(data);
     this.listaCursos.data=data;
-    console.log('LA LISTA ES', data);
     this.getCursos();  
   })
 
@@ -142,9 +128,7 @@ this.http.delete<Curso[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Cursos/'+
 
 getCursos(){
 this.http.get<Curso[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Cursos').subscribe (data =>{
-  console.log(data);
   this.listaCursos.data=data;
-  console.log('LA LISTA ES', data);
   
 })
 }

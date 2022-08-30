@@ -2,10 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/app.reducers';
-import { LoginComponent } from 'src/app/components/login/login.component';
 import { Alumno } from 'src/app/Interfaces/AlumnoInterface';
 
 
@@ -22,14 +20,12 @@ export class AlumnosComponent implements OnInit {
 
   formEstudiante:FormGroup;
   listaAlumnos = new MatTableDataSource<Alumno>();
-  //isAdmin:boolean = localStorage.getItem('rol') == 'admin';
   isAdmin:boolean = false;
   rol : string;
   
 
   constructor(private fb:FormBuilder, private http:HttpClient, private store : Store<AppState>) { 
     this.store.select('rol').subscribe((rol)=>{
-      console.log(rol);
       this.rol = rol;
     });
   }
@@ -81,12 +77,6 @@ export class AlumnosComponent implements OnInit {
     return this.formEstudiante.get('nota').invalid && this.formEstudiante.get('nota').touched;
   }
 
-    //Metodo de Crea,Inicializa y AgregaValida los inputs
-    
-   
-     
-
-
   //Probando como obtener los valores de los forumarios
   
   agregarAlumno(){
@@ -115,9 +105,7 @@ export class AlumnosComponent implements OnInit {
       
       
       this.http.put<Alumno[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Alumnos/'+element.id,element).subscribe (data =>{
-        console.log(data);
         this.listaAlumnos.data=data;
-        console.log('LA LISTA ES', data);
         this.listaAlumnos.data = listaAuxiliar;
         this.formEstudiante.reset();
         
@@ -128,9 +116,7 @@ export class AlumnosComponent implements OnInit {
   if(editar==false){
     
     this.http.post<Alumno[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Alumnos',alumno).subscribe (data =>{
-      console.log(data);
       this.listaAlumnos.data=data;
-      console.log('LA LISTA ES', data);
       listaAuxiliar.push(alumno);
       this.listaAlumnos.data = listaAuxiliar;
       this.formEstudiante.reset();
@@ -141,23 +127,14 @@ export class AlumnosComponent implements OnInit {
   }           
 
 editarAlumno(element){
-console.log('editar', element);
-
  this.formEstudiante.setValue(element );
-
- 
-  
 }
 
 
 eliminarAlumno(element){
-console.log('EL ELEMENTO A BORRAR ES',element);
-
 let numAborrar=element.id;
 this.http.delete<Alumno[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Alumnos/'+numAborrar).subscribe (data =>{
-      console.log(data);
       this.listaAlumnos.data=data;
-      console.log('LA LISTA ES', data);
       this.getAlumnos();  
     })
 
@@ -167,13 +144,8 @@ this.http.delete<Alumno[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Alumnos/
 
 getAlumnos(){
   this.http.get<Alumno[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Alumnos').subscribe (data =>{
-    console.log(data);
     this.listaAlumnos.data=data;
-    console.log('LA LISTA ES', data);
     
   })
 }
-
-
-
 }

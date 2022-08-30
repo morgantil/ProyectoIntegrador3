@@ -14,7 +14,6 @@ export class NavbarComponent implements OnInit {
   constructor(private store : Store<AppState> , private router:Router) {
     this.rol = "";
     this.store.select('rol').subscribe((rol)=>{
-      console.log(rol);
       this.rol = rol;
     });
   }

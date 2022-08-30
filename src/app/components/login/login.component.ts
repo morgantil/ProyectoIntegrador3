@@ -21,7 +21,6 @@ export class LoginComponent implements OnInit {
   constructor(private fb: FormBuilder, private http: HttpClient, private store : Store<AppState>) {
     this.rol = "";
     this.store.select('rol').subscribe((rol)=>{
-      console.log(rol);
       this.rol = rol;
     });
   }
@@ -55,12 +54,11 @@ export class LoginComponent implements OnInit {
   enviar(): boolean {
     let user = this.formLogin.get('user').value;
     let pass = this.formLogin.get('pass').value;
-    console.log("pepito");
+
 
     for (let usuario of this.listaUser) {
       if (user == usuario.user && pass == usuario.pass) {
         this.credencialesValidas = true;
-        //localStorage.setItem('rol',usuario.rol);
         this.asignar(usuario.rol);
       }
     }
@@ -73,9 +71,7 @@ export class LoginComponent implements OnInit {
     this.http
       .get<User[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Usuarios')
       .subscribe((data) => {
-        console.log(data);
         this.listaUser = data;
-        console.log('LA LISTA ES', data);
       });
   }
 

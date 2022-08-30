@@ -22,7 +22,6 @@ export class ProfesoresComponent implements OnInit {
 
   constructor(private fb:FormBuilder, private http:HttpClient, private store : Store<AppState>) { 
     this.store.select('rol').subscribe((rol)=>{
-      console.log(rol);
       this.rol = rol;
     });
   }
@@ -84,9 +83,7 @@ agregarProfesor(){
     
     
     this.http.put<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores/'+element.id,element).subscribe (data =>{
-      console.log(data);
       this.listaProfesores.data=data;
-      console.log('LA LISTA ES', data);
       this.listaProfesores.data = listaAuxiliar;
       this.formProfesor.reset();
       
@@ -97,9 +94,7 @@ agregarProfesor(){
 if(editar==false){
   
   this.http.post<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores',profesor).subscribe (data =>{
-    console.log(data);
     this.listaProfesores.data=data;
-    console.log('LA LISTA ES', data);
     listaAuxiliar.push(profesor);
     this.listaProfesores.data = listaAuxiliar;
     this.formProfesor.reset();
@@ -110,23 +105,18 @@ if(editar==false){
 }           
 
 editarProfesor(element){
-console.log('editar', element);
-
 this.formProfesor.setValue(element );
-
-
 
 }
 
 
 eliminarProfesor(element){
-console.log('EL ELEMENTO A BORRAR ES',element);
 
 let numAborrar=element.id;
 this.http.delete<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores/'+numAborrar).subscribe (data =>{
-    console.log(data);
+    
     this.listaProfesores.data=data;
-    console.log('LA LISTA ES', data);
+    
     this.getProfesores();  
   })
 
@@ -136,9 +126,7 @@ this.http.delete<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profes
 
 getProfesores(){
 this.http.get<Profesor[]>('https://62e31bd53891dd9ba8f450e1.mockapi.io/Profesores').subscribe (data =>{
-  console.log(data);
   this.listaProfesores.data=data;
-  console.log('LA LISTA ES', data);
   
 })
 }
